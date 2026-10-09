@@ -1,0 +1,13 @@
+streamlit
+pandas
+numpy
+scikit-learn
+mysql-connector-python
+folium
+streamlit-folium
+plotly
+geopandas
+python-dotenv
+Pillow
+transformers
+torch

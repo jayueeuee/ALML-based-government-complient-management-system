@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Local credentials
+.env
+.streamlit/secrets.toml
+
+# User-submitted complaint images (stored locally during development)
+uploads/*
