@@ -344,6 +344,30 @@ def authenticate_user(username, password, role):
     conn.close()
     return user
 
+
+def change_admin_password(user_id, current_password, new_password):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute(
+            "SELECT id, password FROM users WHERE id = %s AND role = 'Admin'",
+            (user_id,),
+        )
+        admin = cursor.fetchone()
+        if not admin or not _verify_password(current_password, admin["password"])[0]:
+            return False
+
+        cursor.execute(
+            "UPDATE users SET password = %s WHERE id = %s AND role = 'Admin'",
+            (_hash_password(new_password), user_id),
+        )
+        conn.commit()
+        return cursor.rowcount == 1
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def authenticate_sevak(username, password):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)

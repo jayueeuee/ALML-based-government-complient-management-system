@@ -24,6 +24,28 @@ if st.session_state.user_info.get("role") not in ["Admin", "Officer"]:
 
 st.title("📈 Data Science & Analytics Dashboard")
 
+if st.session_state.user_info.get("role") == "Admin":
+    with st.expander("Change Admin Password"):
+        with st.form("change_admin_password_form"):
+            current_password = st.text_input("Current Admin Password", type="password")
+            new_password = st.text_input("New Password (at least 12 characters)", type="password")
+            confirm_password = st.text_input("Confirm New Password", type="password")
+            update_password = st.form_submit_button("Update Admin Password")
+
+        if update_password:
+            if not current_password or not new_password or not confirm_password:
+                st.error("Fill in all password fields.")
+            elif len(new_password) < 12:
+                st.error("Choose a password with at least 12 characters.")
+            elif new_password != confirm_password:
+                st.error("The new passwords do not match.")
+            elif database.change_admin_password(
+                st.session_state.user_info["id"], current_password, new_password
+            ):
+                st.success("Admin password updated.")
+            else:
+                st.error("Current password is incorrect or the admin account was not found.")
+
 # Run Escalation check
 escalated_count = database.escalate_black_zone_complaints(days_threshold=3)
 if escalated_count > 0:
