@@ -2,18 +2,19 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
+from urllib.parse import urlencode
 from dotenv import load_dotenv
 import streamlit as st
 
 load_dotenv()
 
 
-def _get_setting(name):
+def _get_setting(name, default=None):
     try:
         value = st.secrets.get(name)
     except Exception:
         value = None
-    return value or os.getenv(name)
+    return value or os.getenv(name, default)
 
 
 def send_complaint_email(sevak_email, sevak_name, complaint_id, category, priority, description, lat, lon):
@@ -129,7 +130,11 @@ def send_resolution_email(user_contact, user_name, complaint_id, category, sevak
     sender_email = _get_setting("SENDER_EMAIL")
     sender_pwd = _get_setting("SENDER_PASSWORD")
     
-    feedback_url = f"http://localhost:8501/Feedback?complaint_id={complaint_id}"
+    app_base_url = _get_setting(
+        "APP_BASE_URL",
+        "https://alml-based-government-complient-management-system-dhr8ybbvkc9y.streamlit.app",
+    )
+    feedback_url = f"{app_base_url.rstrip('/')}/Feedback?{urlencode({'complaint_id': complaint_id})}"
     
     subject = f"Your Complaint {complaint_id} has been Resolved! ✅"
     
