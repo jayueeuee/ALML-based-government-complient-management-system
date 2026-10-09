@@ -3,14 +3,24 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
+
+
+def _get_setting(name):
+    try:
+        value = st.secrets.get(name)
+    except Exception:
+        value = None
+    return value or os.getenv(name)
+
 
 def send_complaint_email(sevak_email, sevak_name, complaint_id, category, priority, description, lat, lon):
     smtp_server = "smtp.gmail.com"
     smtp_port =  587
-    sender_email = os.getenv("SENDER_EMAIL")
-    sender_pwd = os.getenv("SENDER_PASSWORD")
+    sender_email = _get_setting("SENDER_EMAIL")
+    sender_pwd = _get_setting("SENDER_PASSWORD")
     
     if not sender_email or not sender_pwd:
         print("SMTP Credentials not configured. Simulating email send...")
@@ -66,8 +76,8 @@ def send_officer_assignment_email(officer_email, officer_name, complaint_id, cat
     """Send an email to the field officer when they are assigned a suspicious complaint."""
     smtp_server = "smtp.gmail.com"
     smtp_port =  587
-    sender_email = os.getenv("SENDER_EMAIL")
-    sender_pwd = os.getenv("SENDER_PASSWORD")
+    sender_email = _get_setting("SENDER_EMAIL")
+    sender_pwd = _get_setting("SENDER_PASSWORD")
     
     if not sender_email or not sender_pwd:
         print(f"--- MOCK EMAIL TO OFFICER {officer_email} ---")
@@ -116,8 +126,8 @@ def send_resolution_email(user_contact, user_name, complaint_id, category, sevak
     """Send an email to the user when their complaint is resolved, with a feedback link."""
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    sender_email = os.getenv("SENDER_EMAIL")
-    sender_pwd = os.getenv("SENDER_PASSWORD")
+    sender_email = _get_setting("SENDER_EMAIL")
+    sender_pwd = _get_setting("SENDER_PASSWORD")
     
     feedback_url = f"http://localhost:8501/Feedback?complaint_id={complaint_id}"
     

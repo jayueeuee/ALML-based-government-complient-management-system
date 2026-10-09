@@ -64,9 +64,11 @@ Welcome to the **AI Governance Complaint Management System**, an intelligent, AI
    MYSQL_DATABASE = "your-database-name"
    BOOTSTRAP_ADMIN_USERNAME = "choose-an-admin-username"
    BOOTSTRAP_ADMIN_PASSWORD = "choose-a-strong-admin-password"
+   SENDER_EMAIL = "your-sender-address"
+   SENDER_PASSWORD = "your-email-app-password"
    ```
 
-   The bootstrap admin is created only when both admin settings are present. Sign in as that admin to add Nagar Sevak and officer accounts. Do not share the admin credentials with testers.
+   `SENDER_EMAIL` and `SENDER_PASSWORD` are optional; add them only if email notifications are needed. The bootstrap admin is created only when both admin settings are present. Sign in as that admin to add Nagar Sevak and officer accounts. Do not share the admin credentials with testers.
 4. Test citizen registration, complaint submission, tracking, and staff workflows using non-sensitive sample data.
 
 The app stores uploaded complaint photos on the server's local filesystem. Those files may be lost when a hosted app restarts or redeploys; use durable object storage before relying on the public deployment for real complaints. Treat all complaint details and images as sensitive, and do not upload real personal data to a test deployment.
